@@ -17,7 +17,7 @@ jsbox.start( /** My custom code */
     
     // deploy code including syntax error
 	function endpointWithSyntaxError(params, context) {
-		console.log("message with missing )");
+		console.log("message with missing )"
 	}
 	
 	// deploy code including runtime error
