@@ -7,6 +7,7 @@ jsbox.config({
 
 jsbox.start( /** My custom code */
   function(endpoint, params, ctx, done) {
+	console.log("Custom code invocation %s %s %s", endpoint, JSON.stringify(params), JSON.stringify(ctx));
   
   	if (endpoint == 'endpointWithSyntaxError') {
   		endpointWithSyntaxError(params, ctx);
