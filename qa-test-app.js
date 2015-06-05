@@ -11,11 +11,14 @@ jsbox.start( /** My custom code */
   	if (endpoint == 'endpointWithSyntaxError') {
   		endpointWithSyntaxError(params, ctx);
   	} 
-  	else {
+  	else if (endpoint == 'endpointWithRuntimeError') {
   		endpointWithRuntimeError(params, ctx);
-  	}
+  	} 
+	else {
+		endpointWithTimeout(params, ctx);
+	}
     
-    // deploy code including syntax error
+        // deploy code including syntax error
 	function endpointWithSyntaxError(params, context) {
 		console.log("message with missing )"
 	}
