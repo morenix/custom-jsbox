@@ -9,7 +9,10 @@ jsbox.start( /** My custom code */
   function(endpoint, params, ctx, done) {
 	console.log("Custom code invocation %s %s %s", endpoint, JSON.stringify(params), JSON.stringify(ctx));
   
-  if (endpoint == 'endpointWithSyntaxError') {
+  if (endpoint == 'createObj') {
+    createObj(params, context, done);    
+  }
+  else if (endpoint == 'endpointWithSyntaxError') {
   	endpointWithSyntaxError(params, ctx);
   } 
   else if (endpoint == 'endpointWithRuntimeError') {
@@ -17,9 +20,8 @@ jsbox.start( /** My custom code */
   } 
 	else if (endpoint == 'endpointWithTimeout') {
 		endpointWithTimeout(params, ctx);
-	} else {
-		createObj(params, context, done);
-	}
+	} 
+
   function createObj(params, context, done) {
     var admin = ctx.getAppAdminContext();
         var bucket = admin.bucketWithName('CustomJSBox');
@@ -49,14 +51,14 @@ jsbox.start( /** My custom code */
       console.log('Exec after waiting'); 
   }
 	
-	// deploy code including runtime error
-	function endpointWithRuntimeError(params, context) {
-		undefineFunc();
-	}
-
   // deploy code including syntax error
   function endpointWithSyntaxError(params, context) {
     console.log("message with missing semicolon")
+  }
+
+  // deploy code including runtime error
+  function endpointWithRuntimeError(params, context) {
+    undefineFunc();
   }
 		
 
