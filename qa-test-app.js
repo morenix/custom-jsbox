@@ -9,55 +9,56 @@ jsbox.start( /** My custom code */
   function(endpoint, params, ctx, done) {
 	console.log("Custom code invocation %s %s %s", endpoint, JSON.stringify(params), JSON.stringify(ctx));
   
-  	if (endpoint == 'endpointWithSyntaxError') {
-  		endpointWithSyntaxError(params, ctx);
-  	} 
-  	else if (endpoint == 'endpointWithRuntimeError') {
-  		endpointWithRuntimeError(params, ctx);
-  	} 
+  if (endpoint == 'endpointWithSyntaxError') {
+  	endpointWithSyntaxError(params, ctx);
+  } 
+  else if (endpoint == 'endpointWithRuntimeError') {
+  	endpointWithRuntimeError(params, ctx);
+  } 
 	else if (endpoint == 'endpointWithTimeout') {
 		endpointWithTimeout(params, ctx);
 	} else {
 		createObj(params, context, done);
 	}
-    
-        // deploy code including syntax error
-	function endpointWithSyntaxError(params, context) {
-		console.log("message with missing semicolon")
-	}
+  function createObj(params, context, done) {
+    var admin = ctx.getAppAdminContext();
+        var bucket = admin.bucketWithName('CustomJSBox');
+
+        var obj = bucket.createObject();
+        obj.set('endpoint', endpoint);
+        obj.set('params', params);
+        obj.set('context.appID', ctx.getAppID());
+        obj.set('context.appKey', ctx.getAppKey());
+        obj.set('context.accessToken', ctx.getAccessToken());
+
+        obj.save({
+            success: function(obj) {
+             done("Request registered at " + obj.objectURI());
+            },
+            failure: function(obj, error) {
+             done(error);
+            }
+        });
+  }
+
+  // deploy code including timeout (>20sec?) error
+  function endpointWithTimeout(params, context) {
+    var sleepDuration = 30 * 1000; // 30 secs
+    var now = new Date().getTime();
+      while(new Date().getTime() < now + sleepDuration){ /* do nothing */ }
+      console.log('Exec after waiting'); 
+  }
 	
 	// deploy code including runtime error
 	function endpointWithRuntimeError(params, context) {
 		undefineFunc();
 	}
-	
-	// deploy code including timeout (>20sec?) error
-	function endpointWithTimeout(params, context) {
-		var sleepDuration = 30 * 1000; // 30 secs
-		var now = new Date().getTime();
-	    while(new Date().getTime() < now + sleepDuration){ /* do nothing */ }
-	    console.log('Exec after waiting'); 
-	}
 
-	function createObj(params, context, done) {
- 		var admin = ctx.getAppAdminContext();
-    		var bucket = admin.bucketWithName('CustomJSBox');
+  // deploy code including syntax error
+  function endpointWithSyntaxError(params, context) {
+    console.log("message with missing semicolon")
+  }
+		
 
-    		var obj = bucket.createObject();
-    		obj.set('endpoint', endpoint);
-    		obj.set('params', params);
-    		obj.set('context.appID', ctx.getAppID());
-    		obj.set('context.appKey', ctx.getAppKey());
-    		obj.set('context.accessToken', ctx.getAccessToken());
-
-    		obj.save({
-      			success: function(obj) {
-        		 done("Request registered at " + obj.objectURI());
-      			},
-      			failure: function(obj, error) {
-        		 done(error);
-      			}
-    		});
-    	}
     });
 
