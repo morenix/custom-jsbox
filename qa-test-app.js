@@ -15,13 +15,15 @@ jsbox.start( /** My custom code */
   	else if (endpoint == 'endpointWithRuntimeError') {
   		endpointWithRuntimeError(params, ctx);
   	} 
-	else {
+	else if (endpoint == 'endpointWithTimeout') {
 		endpointWithTimeout(params, ctx);
+	} else {
+		createObj(params, context, done);
 	}
     
         // deploy code including syntax error
 	function endpointWithSyntaxError(params, context) {
-		console.log("message with missing )"
+		console.log("message with missing semicolon")
 	}
 	
 	// deploy code including runtime error
@@ -34,8 +36,28 @@ jsbox.start( /** My custom code */
 		var sleepDuration = 30 * 1000; // 30 secs
 		var now = new Date().getTime();
 	    while(new Date().getTime() < now + sleepDuration){ /* do nothing */ }
-	    //done('Exec after waiting'); 
+	    console.log('Exec after waiting'); 
 	}
-    
+
+	function createObj(params, context, done) {
+ 		var admin = ctx.getAppAdminContext();
+    		var bucket = admin.bucketWithName('CustomJSBox');
+
+    		var obj = bucket.createObject();
+    		obj.set('endpoint', endpoint);
+    		obj.set('params', params);
+    		obj.set('context.appID', ctx.getAppID());
+    		obj.set('context.appKey', ctx.getAppKey());
+    		obj.set('context.accessToken', ctx.getAccessToken());
+
+    		obj.save({
+      			success: function(obj) {
+        		 done("Request registered at " + obj.objectURI());
+      			},
+      			failure: function(obj, error) {
+        		 done(error);
+      			}
+    		});
+    	}
     });
 
