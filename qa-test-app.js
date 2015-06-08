@@ -30,11 +30,11 @@ jsbox.start( /** My custom code */
 	}
 	
 	// deploy code including timeout (>20sec?) error
-	function endpointWithTimeout(params, context, done) {
+	function endpointWithTimeout(params, context) {
 		var sleepDuration = 30 * 1000; // 30 secs
 		var now = new Date().getTime();
 	    while(new Date().getTime() < now + sleepDuration){ /* do nothing */ }
-	    done('Exec after waiting'); 
+	    //done('Exec after waiting'); 
 	}
     
     });
