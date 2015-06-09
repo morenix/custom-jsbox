@@ -10,16 +10,20 @@ jsbox.start( /** My custom code */
 	console.log("Custom code invocation %s %s %s", endpoint, JSON.stringify(params), JSON.stringify(ctx));
   
   if (endpoint == 'createObj') {
-    createObj(params, context, done);    
+    createObj(params, context, done);
+    return;
   }
   else if (endpoint == 'endpointWithSyntaxError') {
   	endpointWithSyntaxError(params, ctx);
+    return;
   } 
   else if (endpoint == 'endpointWithRuntimeError') {
   	endpointWithRuntimeError(params, ctx);
+    return;
   } 
 	else if (endpoint == 'endpointWithTimeout') {
 		endpointWithTimeout(params, ctx);
+    return;
 	} 
 
   function createObj(params, context, done) {
